@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portal do Aluno SENAI | Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <div id="login-screen" class="screen active">
+            <div class="login-panel">
+                <div class="login-header">
+                    <div class="logo-wrapper">
+                        <img src="https://www.sp.senai.br/images/senai.svg" alt="Logo SENAI" class="logo">
+                    </div>
+                    <h2>Portal do Aluno</h2>
+                    <p>Conecte-se à sua jornada técnica</p>
+                    <div class="header-line"></div>
+                </div>
+                
+                <div id="login-form-group">
+                    <div class="input-icon-group">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <input type="text" id="login-rm" placeholder="Digite seu RM (Matrícula)">
+                    </div>
+                    <div class="input-icon-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Digite sua Senha">
+                    </div>
+                    <button class="btn-primary" onclick="efetuarLogin()">
+                        Acessar Portal <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <p class="forgot-pass" onclick="alternarFormLogin(true)">Primeiro acesso ou Esqueceu a senha?</p>
+                </div>
+
+                <div id="recovery-form-group" class="hidden">
+                    <h3>Recuperação de Acesso</h3>
+                    <div class="input-icon-group">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" id="rec-rm" placeholder="Confirme seu RM">
+                    </div>
+                    <div class="input-icon-group">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="password" id="new-password" placeholder="Nova Senha">
+                    </div>
+                    <button class="btn-primary" onclick="atualizarSenha()">Confirmar Nova Senha</button>
+                    <p class="forgot-pass" onclick="alternarFormLogin(false)">Voltar para o Login</p>
+                </div>
+                <p id="login-error" class="error-msg"></p>
+            </div>
+        </div>
+
+        <div id="app-screen" class="screen">
+            <header class="main-header">
+                <div class="header-content">
+                    <div class="user-greeting">
+                        <span id="welcome-text">Olá, Caio!</span>
+                        <span id="user-info">Análise e Desenv. de Sistemas</span>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-icon" id="theme-toggle" onclick="alternarTema()">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
+                        <button class="btn-icon" onclick="abrirNotificacoes()">
+                            <i class="fa-solid fa-bell"></i>
+                            <span id="noti-badge" class="badge">2</span>
+                        </button>
+                        <button class="btn-icon" onclick="fecharSessao()">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Pesquisar anúncios..." oninput="filtrarConteudo()">
+                </div>
+                
+                <div id="quick-filters" class="tag-filters">
+                    <button class="filter-btn active" onclick="filtrarPorTag('todos', this)">Todos</button>
+                    <button class="filter-btn" onclick="filtrarPorTag('coord', this)">Coordenação</button>
+                    <button class="filter-btn" onclick="filtrarPorTag('prof', this)">Professores</button>
+                    <button class="filter-btn" onclick="filtrarPorTag('job', this)">Vagas</button>
+                </div>
+            </header>
+
+            <nav class="nav-tabs">
+                <button class="tab-btn active" id="tab-mural" onclick="mudarTab('mural', event)"><i class="fa-solid fa-newspaper"></i> Mural</button>
+                <button class="tab-btn" id="tab-servicos" onclick="mudarTab('servicos', event)"><i class="fa-solid fa-layer-group"></i> Serviços</button>
+                <button class="tab-btn" id="tab-vagas" onclick="mudarTab('vagas', event)"><i class="fa-solid fa-briefcase"></i> Vagas</button>
+                <button class="tab-btn" id="tab-perfil" onclick="mudarTab('perfil', event)"><i class="fa-solid fa-user-gear"></i> Perfil</button>
+            </nav>
+
+            <main id="content-area"></main>
+
+            <div id="sidebar-overlay" onclick="fecharNotificacoes()"></div>
+            <div id="notification-sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="fa-solid fa-bell"></i> Recentes</h3>
+                    <button class="btn-close" onclick="fecharNotificacoes()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="sidebar-content"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
