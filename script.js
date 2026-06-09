@@ -2,312 +2,160 @@
 const bancoAnuncios = [
     { id: 1, categoria: "mural", tag: "coord", tipo: "Coordenação", titulo: "Rematrícula 2026/2", desc: "Prezados alunos, o prazo de renovação de matrícula encerra no fim deste mês. Evitem contratempos realizando o processo na secretaria virtual." },
     { id: 2, categoria: "mural", tag: "prof", tipo: "Professor", titulo: "Entrega de Projetos - Redes", desc: "Professor Carlos avisa: A postagem dos relatórios finais de monitoramento de redes locais deve ser feita no ambiente virtual de aprendizagem até sexta." },
+    { id: 5, categoria: "links", tag: "coord", tipo: "Links", titulo: "Ambiente Virtual de Aprendizagem (AVA)", desc: "Acesse o portal de conteúdos e aulas do SENAI: <a href='https://ava.sp.senai.br' target='_blank' style='color:var(--laranja-senai); text-decoration:underline; font-weight:600;'>ava.sp.senai.br</a>" },
+    { id: 6, categoria: "links", tag: "coord", tipo: "Links", titulo: "Secretaria Digital Virtual", desc: "Consulte suas notas oficiais, faltas e emita documentos acadêmicos diretamente pelo portal: <a href='https://www.sp.senai.br' target='_blank' style='color:var(--laranja-senai); text-decoration:underline; font-weight:600;'>secretaria.virtual.senai</a>" },
     { id: 3, categoria: "vagas", tag: "job", tipo: "Estágio", titulo: "Desenvolvedor Node.js Júnior", desc: "Empresa de tecnologia busca estudante para atuar no desenvolvimento de integrações de microsserviços e automações. Desejável conhecimento em JavaScript." },
-    { id: 4, categoria: "vagas", tag: "job", tipo: "Estágio", titulo: "Suporte em Infraestrutura", desc: "Oportunidade para monitoramento de ativos de rede e configuração de switches. Envie seu currículo através da aba de serviços do portal." }
+    { id: 4, categoria: "vagas", tag: "job", tipo: "Estágio", titulo: "Suporte em Infraestrutura", desc: "Oportunidade para monitoramento de ativos de rede e configuração de switches. Envie seu currículo diretamente pelo portal interno." }
 ];
 
+// --- ESTADO GLOBAL ---
 let abaAtual = "mural";
 let filtroTagAtivo = "todos";
+let dadosUsuario = {
+    nome: "Caio Silva",
+    rm: "2026110488",
+    curso: "Análise e Desenv. de Sistemas",
+    turma: "Turma A",
+    turno: "Noite",
+    email: "caio.silva@aluno.senai.br"
+};
 
-// --- PERSISTÊNCIA DO TEMA (LOCAL STORAGE) ---
+// --- TEMA ---
 document.addEventListener("DOMContentLoaded", () => {
     const temaSalvo = localStorage.getItem("app-theme") || "light";
     document.documentElement.setAttribute("data-theme", temaSalvo);
-    
     const iconeTema = document.querySelector("#theme-toggle i");
-    if (iconeTema) {
-        iconeTema.className = temaSalvo === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
+    if(iconeTema) iconeTema.className = temaSalvo === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
 });
 
 function alternarTema() {
-    const temaAtual = document.documentElement.getAttribute("data-theme");
-    const novoTema = temaAtual === "dark" ? "light" : "dark";
-    
+    const novoTema = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", novoTema);
     localStorage.setItem("app-theme", novoTema);
-    
-    const iconeTema = document.querySelector("#theme-toggle i");
-    iconeTema.className = novoTema === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    document.querySelector("#theme-toggle i").className = novoTema === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
 }
 
-// --- CONTROLE DE TELAS (AUTENTICAÇÃO) ---
-function alternarFormLogin(exibirRecuperacao) {
-    document.getElementById("login-form-group").classList.toggle("hidden", exibirRecuperacao);
-    document.getElementById("recovery-form-group").classList.toggle("hidden", !exibirRecuperacao);
-    document.getElementById("login-error").innerText = "";
-}
-
+// --- LOGIN ---
 function efetuarLogin() {
-    const rmInput = document.getElementById("login-rm").value.trim();
-    const passwordInput = document.getElementById("login-password").value.trim();
-
-    if (!rmInput || !passwordInput) {
-        document.getElementById("login-error").innerText = "Por favor, preencha todos os campos.";
+    if (!document.getElementById("login-rm").value || !document.getElementById("login-password").value) {
+        document.getElementById("login-error").innerText = "Preencha todos os campos.";
         return;
     }
-
     document.getElementById("login-screen").classList.remove("active");
     document.getElementById("app-screen").classList.add("active");
+    document.getElementById("welcome-text").innerText = "Olá, Sou seu Comunic!";
     renderizarConteudoComSkeleton();
-}
-
-function atualizarSenha() {
-    document.getElementById("login-error").innerText = "Senha updated com sucesso!";
-    alternarFormLogin(false);
 }
 
 function fecharSessao() {
     document.getElementById("app-screen").classList.remove("active");
     document.getElementById("login-screen").classList.add("active");
-    document.getElementById("login-rm").value = "";
-    document.getElementById("login-password").value = "";
 }
 
-// --- ORQUESTRADOR DE SKELETON SCREEN E ANIMAÇÕES ---
+// --- RENDERIZAÇÃO ---
 function renderizarConteudoComSkeleton() {
     const area = document.getElementById("content-area");
-    area.classList.remove("fade-in-active");
+    area.innerHTML = `<div class="skeleton-card" style="height:150px; margin-bottom:10px;"></div>`.repeat(2);
+    document.getElementById("quick-filters").style.display = (abaAtual === "perfil") ? "none" : "flex";
     
-    let skeletonsHtml = "";
-    for(let i = 0; i < 2; i++) {
-        skeletonsHtml += `
-            <div class="skeleton-card">
-                <div class="skeleton-line skeleton-tag"></div>
-                <div class="skeleton-line skeleton-title"></div>
-                <div class="skeleton-line skeleton-text-1"></div>
-                <div class="skeleton-line skeleton-text-2"></div>
-                <div class="skeleton-line skeleton-text-3"></div>
-            </div>
-        `;
-    }
-    area.innerHTML = skeletonsHtml;
-
-    const barraFiltros = document.getElementById("quick-filters");
-    if (abaAtual === "mural" || abaAtual === "vagas") {
-        barraFiltros.style.display = "flex";
-    } else {
-        barraFiltros.style.display = "none";
-    }
-
     setTimeout(() => {
-        if (abaAtual === "servicos") {
-            renderizarServicos(area);
-        } else if (abaAtual === "horas-complementares") {
-            renderizarHorasComplementares(area);
-        } else if (abaAtual === "notas-faltas") {
-            renderizarNotasFaltas(area);
-        } else if (abaAtual === "cronograma") {
-            renderizarCronograma(area);
-        } else if (abaAtual === "perfil") {
-            renderizarPerfil(area);
-        } else {
-            renderizarCardsFiltros(area);
-        }
-        area.classList.add("fade-in-active");
-    }, 650);
+        abaAtual === "perfil" ? renderizarPerfil(area) : renderizarCardsFiltros(area);
+    }, 500);
 }
-
-// --- RENDERIZADORES DE INTERFACE COMPLETA ---
 
 function renderizarCardsFiltros(container) {
-    const termoPesquisa = document.getElementById("search-input").value.toLowerCase();
+    const termo = document.getElementById("search-input").value.toLowerCase();
+    const filtrados = bancoAnuncios.filter(i => i.categoria === abaAtual && (filtroTagAtivo === "todos" || i.tag === filtroTagAtivo) && (i.titulo.toLowerCase().includes(termo) || i.desc.toLowerCase().includes(termo)));
     
-    const dadosFiltrados = bancoAnuncios.filter(item => {
-        const pertenceAba = item.categoria === abaAtual;
-        const pertenceTag = filtroTagAtivo === "todos" || item.tag === filtroTagAtivo;
-        const batePesquisa = item.titulo.toLowerCase().includes(termoPesquisa) || item.desc.toLowerCase().includes(termoPesquisa);
-        return pertenceAba && pertenceTag && batePesquisa;
-    });
-
-    if (dadosFiltrados.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-secondary); font-size:14px;"><i class="fa-solid fa-box-open" style="font-size:24px;margin-bottom:8px;display:block;"></i>Nenhum registro encontrado...</div>`;
-        return;
-    }
-
-    container.innerHTML = dadosFiltrados.map(card => `
+    container.innerHTML = filtrados.length ? filtrados.map(c => `
         <div class="card">
-            <div class="card-header">
-                <h3>${card.titulo}</h3>
-                <span class="tag ${card.tag}">${card.tipo}</span>
-            </div>
-            <p class="card-desc">${card.desc}</p>
-        </div>
-    `).join('');
-}
-
-// RENDERIZA A GRADE DE SERVIÇOS PADRONIZADA COM O ÍCONE DO RELÓGIO LARANJA NO TOPO DO BOTÃO
-function renderizarServicos(container) {
-    container.innerHTML = `
-        <h4 class="secao-titulo">Secretaria & Acadêmico</h4>
-        <div class="links-grid">
-            <a href="#" class="btn-link-util" onclick="mudarSubTela('notas-faltas')">
-                <i class="fa-solid fa-file-invoice"></i>
-                <span>Notas e Faltas</span>
-            </a>
-            <a href="#" class="btn-link-util" onclick="mudarSubTela('cronograma')">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Cronograma</span>
-            </a>
-            <a href="https://www.sp.senai.br" target="_blank" class="btn-link-util">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span>Secretaria Virtual</span>
-            </a>
-            
-            <a href="#" class="btn-link-util" onclick="mudarSubTela('horas-complementares')">
-                <i class="fa-solid fa-clock"></i>
-                <span>Horas Complementares</span>
-            </a>
-        </div>
-        
-        <h4 class="secao-titulo">Sistemas Externos</h4>
-        <div class="links-grid">
-            <a href="https://www.youtube.com" target="_blank" class="btn-link-util">
-                <i class="fa-solid fa-circle-play"></i>
-                <span>Portal de Vídeos</span>
-            </a>
-            <a href="https://www.sp.senai.br" target="_blank" class="btn-link-util">
-                <i class="fa-solid fa-book"></i>
-                <span>Biblioteca Digital</span>
-            </a>
-        </div>
-    `;
-}
-
-function renderizarHorasComplementares(container) {
-    container.innerHTML = `
-        <div class="horas-container">
-            <button class="btn-voltar-servicos" onclick="mudarSubTela('servicos')"><i class="fa-solid fa-chevron-left"></i> Voltar para Serviços</button>
-            
-            <div class="card-progresso-horas">
-                <div class="relogio-status"><i class="fa-solid fa-clock"></i></div>
-                <div class="horas-numeros">45h / 100h</div>
-                <p class="horas-meta">Você concluiu 45% da carga horária obrigatória</p>
-                <div class="barra-progresso-bg">
-                    <div class="barra-progresso-fill"></div>
-                </div>
-            </div>
-
-            <h4 class="secao-titulo">Atividades Validadas</h4>
-            <div class="lista-atividades">
-                <div class="atividade-item">
-                    <div class="atividade-info">
-                        <h4>Hackathon Frontend SENAI</h4>
-                        <span>Validado em: 14/04/2026</span>
-                    </div>
-                    <div class="atividade-qtd">+25h</div>
-                </div>
-                <div class="atividade-item">
-                    <div class="atividade-info">
-                        <h4>Curso Extensão IoT (ESP32)</h4>
-                        <span>Validado em: 05/05/2026</span>
-                    </div>
-                    <div class="atividade-qtd">+20h</div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function renderizarNotasFaltas(container) {
-    container.innerHTML = `
-        <button class="btn-voltar-servicos" onclick="mudarSubTela('servicos')"><i class="fa-solid fa-chevron-left"></i> Voltar para Serviços</button>
-        <h4 class="secao-titulo" style="margin-top:15px;">Notas e Faltas</h4>
-        <div class="card">
-            <h3>Análise e Modelagem de Sistemas</h3>
-            <p class="card-desc" style="margin-top:5px;">Média Parcial: <b>8.5</b> | Faltas: <b>2</b></p>
-        </div>
-        <div class="card">
-            <h3>Arquitetura de Redes e IoT</h3>
-            <p class="card-desc" style="margin-top:5px;">Média Parcial: <b>9.0</b> | Faltas: <b>0</b></p>
-        </div>
-    `;
-}
-
-function renderizarCronograma(container) {
-    container.innerHTML = `
-        <button class="btn-voltar-servicos" onclick="mudarSubTela('servicos')"><i class="fa-solid fa-chevron-left"></i> Voltar para Serviços</button>
-        <h4 class="secao-titulo" style="margin-top:15px;">Cronograma de Aulas</h4>
-        <div class="card">
-            <h3>Segunda a Sexta</h3>
-            <p class="card-desc" style="margin-top:5px;">Horário: 13h00 às 17h00<br>Ambiente: Laboratório de Redes e Automação</p>
-        </div>
-    `;
+            <div class="card-header"><h3>${c.titulo}</h3><span class="tag ${c.tag}">${c.tipo}</span></div>
+            <p class="card-desc">${c.desc}</p>
+        </div>`).join('') : `<p style="text-align:center; padding:20px;">Nenhum registro encontrado.</p>`;
 }
 
 function renderizarPerfil(container) {
+    const iniciais = dadosUsuario.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
     container.innerHTML = `
-        <div class="card" style="text-align: center; padding: 25px 15px;">
-            <div style="width: 75px; height: 75px; background: var(--laranja-senai); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 12px auto; font-size: 26px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,107,0,0.25);">
-                CS
+        <div class="card" style="padding: 20px 15px; position: relative;">
+            <div style="position: absolute; top: 15px; right: 15px; display: flex; gap: 14px; font-size: 16px;">
+                <button onclick="executarAtualizacaoPerfil(this)" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; transition: color 0.2s, transform 0.5s ease;" onmouseover="this.style.color='var(--laranja-senai)'" onmouseout="this.style.color='var(--text-secondary)'">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button onclick="abrirModalPerfil()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--laranja-senai)'" onmouseout="this.style.color='var(--text-secondary)'">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
             </div>
-            <h3 style="font-size: 18px; margin-bottom: 4px;">Caio Silva</h3>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">RM: 2026110488</p>
+
+            <div style="text-align: center; margin-top: 10px;">
+                <div style="width: 75px; height: 75px; background: var(--laranja-senai); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 12px auto; font-size: 26px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,107,0,0.25);">
+                    ${iniciais}
+                </div>
+                <h3 style="font-size: 18px; margin-bottom: 4px; color: var(--text-primary);">${dadosUsuario.nome}</h3>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">RM: ${dadosUsuario.rm}</p>
+            </div>
+
             <div style="border-top: 1px solid var(--border-color); padding-top: 15px; text-align: left; font-size: 13.5px;">
-                <p style="margin-bottom: 8px; color: var(--text-secondary);"><strong>Curso:</strong> Análise e Desenv. de Sistemas</p>
-                <p style="margin-bottom: 8px; color: var(--text-secondary);"><strong>Período:</strong> 1º Módulo - Turma A</p>
-                <p style="color: var(--text-secondary);"><strong>E-mail:</strong> caio.silva@aluno.senai.br</p>
+                <p style="margin-bottom: 8px; color: var(--text-secondary);"><strong>Curso:</strong> ${dadosUsuario.curso}</p>
+                <p style="margin-bottom: 8px; color: var(--text-secondary);"><strong>Turma:</strong> ${dadosUsuario.turma}</p>
+                <p style="margin-bottom: 8px; color: var(--text-secondary);"><strong>Turno:</strong> ${dadosUsuario.turno}</p>
+                <p style="color: var(--text-secondary);"><strong>E-mail:</strong> ${dadosUsuario.email}</p>
             </div>
         </div>
     `;
 }
 
-// --- COMPLEMENTOS DE NAVEGAÇÃO ---
-function mudarTab(idAba, evento) {
-    abaAtual = idAba;
-    filtroTagAtivo = "todos";
-
-    const botoesFiltro = document.querySelectorAll(".filter-btn");
-    botoesFiltro.forEach((btn, idx) => {
-        btn.classList.toggle("active", idx === 0);
-    });
-
-    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-    if (evento) {
-        evento.currentTarget.classList.add("active");
-    } else {
-        document.getElementById(`tab-${idAba}`).classList.add("active");
-    }
-
+// --- AÇÕES DO PERFIL ---
+function executarAtualizacaoPerfil(botao) {
+    botao.style.transform = "rotate(360deg)";
+    setTimeout(() => { botao.style.transform = "rotate(0deg)"; }, 500);
     renderizarConteudoComSkeleton();
 }
 
-function mudarSubTela(idSubTela) {
-    abaAtual = idSubTela;
+function abrirModalPerfil() {
+    document.getElementById("edit-nome").value = dadosUsuario.nome;
+    document.getElementById("edit-curso").value = dadosUsuario.curso;
+    document.getElementById("edit-turma").value = dadosUsuario.turma;
+    document.getElementById("edit-turno").value = dadosUsuario.turno;
+    document.getElementById("modal-overlay").style.display = "flex";
+}
+
+function fecharModalPerfil() { document.getElementById("modal-overlay").style.display = "none"; }
+
+function salvarConfiguracoesPerfil() {
+    dadosUsuario.nome = document.getElementById("edit-nome").value;
+    dadosUsuario.curso = document.getElementById("edit-curso").value;
+    dadosUsuario.turma = document.getElementById("edit-turma").value;
+    dadosUsuario.turno = document.getElementById("edit-turno").value;
+
+    document.getElementById("welcome-text").innerText = "Olá, Sou seu Comunic!";
+    document.getElementById("user-info").innerText = dadosUsuario.curso;
+
+    fecharModalPerfil();
+    renderizarPerfil(document.getElementById("content-area"));
+}
+
+// --- NAVEGAÇÃO E FILTROS ---
+function mudarTab(id, e) {
+    abaAtual = id;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    e.currentTarget.classList.add("active");
     renderizarConteudoComSkeleton();
 }
 
-function filtrarPorTag(idTag, botaoClicado) {
-    filtroTagAtivo = idTag;
-    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-    botaoClicado.classList.add("active");
-    
-    const area = document.getElementById("content-area");
-    renderizarCardsFiltros(area);
+function filtrarPorTag(tag, btn) {
+    filtroTagAtivo = tag;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderizarCardsFiltros(document.getElementById("content-area"));
 }
 
-function filtrarConteudo() {
-    const area = document.getElementById("content-area");
-    if (abaAtual === "mural" || abaAtual === "vagas") {
-        renderizarCardsFiltros(area);
-    }
-}
+function filtrarConteudo() { renderizarCardsFiltros(document.getElementById("content-area")); }
 
-// --- NOTIFICAÇÕES (PAINEL SLIDE-OUT) ---
 function abrirNotificacoes() {
     document.getElementById("sidebar-overlay").style.display = "block";
     document.getElementById("notification-sidebar").classList.add("open");
-    
-    document.getElementById("sidebar-content").innerHTML = `
-        <div class="noti-item">
-            <h4>Aviso de Feriado</h4>
-            <p>Não haverá aula nesta quinta-feira devido ao feriado regional prolongado.</p>
-        </div>
-        <div class="noti-item">
-            <h4>Inscrições abertas</h4>
-            <p>Inscrições para a maratona interna de desenvolvimento e redes encerram amanhã às 18h.</p>
-        </div>
-    `;
 }
 
 function fecharNotificacoes() {

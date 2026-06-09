@@ -17,38 +17,24 @@
                     <div class="logo-wrapper">
                         <img src="https://www.sp.senai.br/images/senai.svg" alt="Logo SENAI" class="logo">
                     </div>
-                    <h2>Portal do Aluno</h2>
-                    <p>Conecte-se à sua jornada técnica</p>
+                    <h2>Senai Conecta</h2>
+                    <p>Portal de Comunicação</p>
                     <div class="header-line"></div>
                 </div>
                 
                 <div id="login-form-group">
                     <div class="input-icon-group">
                         <i class="fa-solid fa-user-circle"></i>
-                        <input type="text" id="login-rm" placeholder="Digite seu RM (Matrícula)">
+                        <input type="text" id="login-rm" placeholder="Email">
                     </div>
                     <div class="input-icon-group">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="login-password" placeholder="Digite sua Senha">
+                        <input type="password" id="login-password" placeholder="Senha">
                     </div>
                     <button class="btn-primary" onclick="efetuarLogin()">
                         Acessar Portal <i class="fa-solid fa-arrow-right"></i>
                     </button>
                     <p class="forgot-pass" onclick="alternarFormLogin(true)">Primeiro acesso ou Esqueceu a senha?</p>
-                </div>
-
-                <div id="recovery-form-group" class="hidden">
-                    <h3>Recuperação de Acesso</h3>
-                    <div class="input-icon-group">
-                        <i class="fa-solid fa-id-card"></i>
-                        <input type="text" id="rec-rm" placeholder="Confirme seu RM">
-                    </div>
-                    <div class="input-icon-group">
-                        <i class="fa-solid fa-key"></i>
-                        <input type="password" id="new-password" placeholder="Nova Senha">
-                    </div>
-                    <button class="btn-primary" onclick="atualizarSenha()">Confirmar Nova Senha</button>
-                    <p class="forgot-pass" onclick="alternarFormLogin(false)">Voltar para o Login</p>
                 </div>
                 <p id="login-error" class="error-msg"></p>
             </div>
@@ -58,28 +44,20 @@
             <header class="main-header">
                 <div class="header-content">
                     <div class="user-greeting">
-                        <span id="welcome-text">Olá, Caio!</span>
+                        <span id="welcome-text">Olá, Sou seu Comunic!</span>
+                        <br>
                         <span id="user-info">Análise e Desenv. de Sistemas</span>
                     </div>
                     <div class="header-actions">
-                        <button class="btn-icon" id="theme-toggle" onclick="alternarTema()">
-                            <i class="fa-solid fa-moon"></i>
-                        </button>
-                        <button class="btn-icon" onclick="abrirNotificacoes()">
-                            <i class="fa-solid fa-bell"></i>
-                            <span id="noti-badge" class="badge">2</span>
-                        </button>
-                        <button class="btn-icon" onclick="fecharSessao()">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
+                        <button class="btn-icon" id="theme-toggle" onclick="alternarTema()"><i class="fa-solid fa-moon"></i></button>
+                        <button class="btn-icon" onclick="abrirNotificacoes()"><i class="fa-solid fa-bell"></i><span id="noti-badge" class="badge">2</span></button>
+                        <button class="btn-icon" onclick="fecharSessao()"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     </div>
                 </div>
-                
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="search-input" placeholder="Pesquisar anúncios..." oninput="filtrarConteudo()">
                 </div>
-                
                 <div id="quick-filters" class="tag-filters">
                     <button class="filter-btn active" onclick="filtrarPorTag('todos', this)">Todos</button>
                     <button class="filter-btn" onclick="filtrarPorTag('coord', this)">Coordenação</button>
@@ -90,23 +68,48 @@
 
             <nav class="nav-tabs">
                 <button class="tab-btn active" id="tab-mural" onclick="mudarTab('mural', event)"><i class="fa-solid fa-newspaper"></i> Mural</button>
-                <button class="tab-btn" id="tab-servicos" onclick="mudarTab('servicos', event)"><i class="fa-solid fa-layer-group"></i> Serviços</button>
+                <button class="tab-btn" id="tab-links" onclick="mudarTab('links', event)"><i class="fa-solid fa-link"></i> Links</button>
                 <button class="tab-btn" id="tab-vagas" onclick="mudarTab('vagas', event)"><i class="fa-solid fa-briefcase"></i> Vagas</button>
                 <button class="tab-btn" id="tab-perfil" onclick="mudarTab('perfil', event)"><i class="fa-solid fa-user-gear"></i> Perfil</button>
             </nav>
 
             <main id="content-area"></main>
+        </div>
+    </div>
 
-            <div id="sidebar-overlay" onclick="fecharNotificacoes()"></div>
-            <div id="notification-sidebar">
-                <div class="sidebar-header">
-                    <h3><i class="fa-solid fa-bell"></i> Recentes</h3>
-                    <button class="btn-close" onclick="fecharNotificacoes()"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div id="sidebar-content"></div>
+    <div id="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 20px;" onclick="fecharModalPerfil()">
+        <div class="card" style="width: 100%; max-width: 400px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+            <h3><i class="fa-solid fa-gear"></i> Configurações</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <input type="text" id="edit-nome" placeholder="Nome Completo" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                
+                <select id="edit-curso" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                    <option value="Análise e Desenv. de Sistemas">Análise e Desenv. de Sistemas</option>
+                    <option value="Redes de Computadores">Redes de Computadores</option>
+                    <option value="Eletrônica Industrial">Eletrônica Industrial</option>
+                    <option value="Fabricação Mecânica">Fabricação Mecânica</option>
+                </select>
+                
+                <input type="text" id="edit-turma" placeholder="Turma (Ex: Turma A)" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                
+                <select id="edit-turno" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                </select>
+                
+                <button onclick="salvarConfiguracoesPerfil()" class="btn-primary" style="padding: 12px; margin-top: 10px;">Salvar Alterações</button>
             </div>
         </div>
+    </div>
 
+    <div id="sidebar-overlay" onclick="fecharNotificacoes()"></div>
+    <div id="notification-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-bell"></i> Recentes</h3>
+            <button class="btn-close" onclick="fecharNotificacoes()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="sidebar-content"></div>
     </div>
 
     <script src="script.js"></script>

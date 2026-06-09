@@ -78,7 +78,7 @@ const server = http.createServer((req, res) => {
     }
 
     // ==========================================
-    // API: Rota de Troca de Senha (Dessa ou Próxima Etapa)
+    // API: Rota de Troca de Senha
     // ==========================================
     if (url === '/api/alterar-senha' && req.method === 'POST') {
         let body = '';
