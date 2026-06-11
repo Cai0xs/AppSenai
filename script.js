@@ -1,6 +1,6 @@
 // --- BASE DE DADOS CENTRALIZADA ---
 const bancoAnuncios = [
-    { id: 1, categoria: "mural", tag: "coord", tipo: "Coordenação", titulo: "Rematrícula 2026/2", desc: "Prezados alunos, o prazo de renovação de matrícula encerra no fim deste mês. Evitem contratempos realizando o processo na secretaria virtual." },
+    { id: 1, categoria: "mural", tag: "coord", tipo: "Gestão", titulo: "Rematrícula 2026/2", desc: "Prezados alunos, o prazo de renovação de matrícula encerra no fim deste mês. Evitem contratempos realizando o processo na secretaria virtual." },
     { id: 2, categoria: "mural", tag: "prof", tipo: "Professor", titulo: "Entrega de Projetos - Redes", desc: "Professor Carlos avisa: A postagem dos relatórios finais de monitoramento de redes locais deve ser feita no ambiente virtual de aprendizagem até sexta." },
     { id: 5, categoria: "links", tag: "coord", tipo: "Links", titulo: "Ambiente Virtual de Aprendizagem (AVA)", desc: "Acesse o portal de conteúdos e aulas do SENAI: <a href='https://ava.sp.senai.br' target='_blank' style='color:var(--laranja-senai); text-decoration:underline; font-weight:600;'>ava.sp.senai.br</a>" },
     { id: 6, categoria: "links", tag: "coord", tipo: "Links", titulo: "Secretaria Digital Virtual", desc: "Consulte suas notas oficiais, faltas e emita documentos acadêmicos diretamente pelo portal: <a href='https://www.sp.senai.br' target='_blank' style='color:var(--laranja-senai); text-decoration:underline; font-weight:600;'>secretaria.virtual.senai</a>" },
@@ -154,11 +154,34 @@ function filtrarPorTag(tag, btn) {
 function filtrarConteudo() { renderizarCardsFiltros(document.getElementById("content-area")); }
 
 function abrirNotificacoes() {
+    const container = document.getElementById("sidebar-content");
+    
+    // Aqui você pode colocar os dados que quiser
+    const minhasNotificacoes = [
+        { titulo: "Rematrícula 2026/2", tag: "Gest", tipo: "Gestão", desc: "O prazo encerra no fim deste mês. Realize na secretaria." },
+        { titulo: "Entrega de Projetos", tag: "prof", tipo: "Professor", desc: "Postagem no AVA até sexta-feira." }
+    ];
+
+    container.innerHTML = `
+        <div style="padding: 10px;">
+            ${minhasNotificacoes.map(n => `
+                <div class="card" style="margin-bottom: 15px; cursor: pointer;">
+                    <div class="card-header">
+                        <h3 style="font-size: 14px;">${n.titulo}</h3>
+                        <span class="tag ${n.tag}" style="font-size: 9px; padding: 3px 6px;">${n.tipo}</span>
+                    </div>
+                    <p class="card-desc" style="font-size: 12px; margin-top: 5px;">${n.desc}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
     document.getElementById("sidebar-overlay").style.display = "block";
     document.getElementById("notification-sidebar").classList.add("open");
 }
 
 function fecharNotificacoes() {
+    // 4. Esconde o painel lateral
     document.getElementById("sidebar-overlay").style.display = "none";
     document.getElementById("notification-sidebar").classList.remove("open");
 }

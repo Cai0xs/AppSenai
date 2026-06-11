@@ -359,23 +359,17 @@ main {
     background: var(--bg-main);
 }
 
-/* --- MICRO-INTERAÇÃO: ANIMAÇÃO DE FLUIDEZ (FADE-IN + SLIDE) --- */
+/* --- MICRO-INTERAÇÃO: ANIMAÇÃO DE FLUIDEZ --- */
 .fade-in-active {
     animation: smoothView 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes smoothView {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* CARDS DO FEED MURAL */
+/* CARDS DO FEED MURAL COM HOVER */
 .card { 
     background: var(--card-bg); 
     padding: 20px; 
@@ -383,6 +377,18 @@ main {
     margin-bottom: 14px; 
     box-shadow: var(--shadow-subtle); 
     border: 1px solid var(--border-color); 
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    background-color: #f0f7ff; 
+    border-color: #bfdbfe;
+    cursor: pointer;
+}
+
+[data-theme="dark"] .card:hover {
+    background-color: #1e2d5a;
+    border-color: #2563eb;
 }
 
 .card-header { 
@@ -455,7 +461,7 @@ main {
     background: rgba(255, 107, 0, 0.02); 
 }
 
-/* --- SKELETON SCREEN (CARREGAMENTO REALISTA) --- */
+/* SKELETON SCREEN */
 .skeleton-card {
     background: var(--card-bg);
     padding: 20px;
@@ -471,12 +477,6 @@ main {
     border-radius: 4px;
 }
 
-.skeleton-title { width: 65%; height: 16px; margin-bottom: 15px; }
-.skeleton-tag { width: 25%; height: 14px; float: right; border-radius: 6px; }
-.skeleton-text-1 { width: 100%; height: 12px; margin-bottom: 8px; }
-.skeleton-text-2 { width: 92%; height: 12px; margin-bottom: 8px; }
-.skeleton-text-3 { width: 45%; height: 12px; }
-
 @keyframes shimmerLoading {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
@@ -484,97 +484,21 @@ main {
 
 /* NOTIFICAÇÕES LATERAIS */
 #sidebar-overlay { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(6, 11, 25, 0.4); 
-    backdrop-filter: blur(4px); 
-    z-index: 99; 
-    display: none; 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(6, 11, 25, 0.4); backdrop-filter: blur(4px); z-index: 99; display: none; 
 }
 
 #notification-sidebar { 
-    position: absolute; 
-    top: 0; 
-    right: -290px; 
-    width: 270px; 
-    height: 100%; 
-    background: var(--card-bg); 
-    z-index: 100; 
-    display: flex; 
-    flex-direction: column; 
-    border-left: 1px solid var(--border-color); 
-    transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+    position: absolute; top: 0; right: -290px; width: 270px; height: 100%; 
+    background: var(--card-bg); z-index: 100; display: flex; flex-direction: column; 
+    border-left: 1px solid var(--border-color); transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
 }
 
 #notification-sidebar.open { right: 0; }
 
-.sidebar-header { 
-    padding: 18px; 
-    border-bottom: 1px solid var(--border-color); 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    color: var(--text-primary); 
-}
-
-.btn-close { 
-    background: none; 
-    border: none; 
-    font-size: 20px; 
-    color: var(--text-secondary); 
-    cursor: pointer; 
-}
-
-#sidebar-content { 
-    padding: 14px; 
-    flex: 1; 
-    overflow-y: auto; 
-}
-
-.noti-item { 
-    padding: 12px; 
-    background: var(--bg-main); 
-    border-radius: 10px; 
-    margin-bottom: 10px; 
-    border: 1px solid var(--border-color); 
-}
-
-.noti-item h4 { 
-    font-size: 13px; 
-    font-weight: 700; 
-    margin-bottom: 4px; 
-    color: var(--text-primary); 
-}
-
-.noti-item p { 
-    font-size: 12px; 
-    color: var(--text-secondary); 
-    line-height: 1.4; 
-}
-
-/* --- TELA DE HORAS COMPLEMENTARES (RELOGIO ANIMADO) --- */
-.horas-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.card-progresso-horas {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: var(--shadow-subtle);
-}
-
+/* DEMAIS ELEMENTOS E HORAS COMPLEMENTARES */
 .relogio-status {
-    font-size: 46px;
-    color: var(--laranja-senai);
-    margin-bottom: 10px;
+    font-size: 46px; color: var(--laranja-senai); margin-bottom: 10px;
     animation: pulseIcon 2.5s infinite ease-in-out;
 }
 
@@ -583,91 +507,8 @@ main {
     50% { transform: scale(1.08); opacity: 0.85; }
 }
 
-.horas-numeros {
-    font-size: 30px;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-}
-
-.horas-meta {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-}
-
-.barra-progresso-bg {
-    width: 100%;
-    height: 8px;
-    background: rgba(120, 120, 120, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
 .barra-progresso-fill {
-    height: 100%;
-    background: var(--laranja-senai);
-    border-radius: 4px;
-    width: 45%;
-}
-
-.lista-atividades {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.atividade-item {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.atividade-info h4 {
-    font-size: 14px;
-    color: var(--text-primary);
-    margin-bottom: 2px;
-}
-
-.atividade-info span {
-    font-size: 11px;
-    color: var(--text-secondary);
-}
-
-.atividade-qtd {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--laranja-senai);
-    background: rgba(255, 107, 0, 0.1);
-    padding: 4px 10px;
-    border-radius: 8px;
-}
-
-.btn-voltar-servicos {
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 5px;
-    transition: all 0.2s;
-}
-
-.btn-voltar-servicos:hover {
-    border-color: var(--laranja-senai);
-    color: var(--laranja-senai);
-    background: rgba(255, 107, 0, 0.02);
+    height: 100%; background: var(--laranja-senai); border-radius: 4px; width: 45%;
 }
 
 .hidden { display: none !important; }
