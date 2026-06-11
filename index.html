@@ -54,10 +54,6 @@
                         <button class="btn-icon" onclick="fecharSessao()"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     </div>
                 </div>
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="search-input" placeholder= oninput="filtrarConteudo()">
-                </div>
                 <div id="quick-filters" class="tag-filters">
                     <button class="filter-btn active" onclick="filtrarPorTag('todos', this)">Todos</button>
                     <button class="filter-btn" onclick="filtrarPorTag('gest', this)">Gestão</button>
@@ -105,11 +101,9 @@
 
     <div id="sidebar-overlay" onclick="fecharNotificacoes()"></div>
     <div id="notification-sidebar">
-    <div class="sidebar-header">
-        <h3><i class="fa-solid fa-bell"></i> Recentes</h3>
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-bell"></i> Recentes</h3>
         </div>
-    <div id="sidebar-content"></div>
-</div>
         <div id="sidebar-content"></div>
     </div>
 

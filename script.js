@@ -56,7 +56,9 @@ function fecharSessao() {
 function renderizarConteudoComSkeleton() {
     const area = document.getElementById("content-area");
     area.innerHTML = `<div class="skeleton-card" style="height:150px; margin-bottom:10px;"></div>`.repeat(2);
-    document.getElementById("quick-filters").style.display = (abaAtual === "perfil") ? "none" : "flex";
+    
+    const filtros = document.getElementById("quick-filters");
+    if(filtros) filtros.style.display = (abaAtual === "perfil") ? "none" : "flex";
     
     setTimeout(() => {
         abaAtual === "perfil" ? renderizarPerfil(area) : renderizarCardsFiltros(area);
@@ -64,8 +66,11 @@ function renderizarConteudoComSkeleton() {
 }
 
 function renderizarCardsFiltros(container) {
-    const termo = document.getElementById("search-input").value.toLowerCase();
-    const filtrados = bancoAnuncios.filter(i => i.categoria === abaAtual && (filtroTagAtivo === "todos" || i.tag === filtroTagAtivo) && (i.titulo.toLowerCase().includes(termo) || i.desc.toLowerCase().includes(termo)));
+    // Busca removida: apenas filtra por categoria e tag
+    const filtrados = bancoAnuncios.filter(i => 
+        i.categoria === abaAtual && 
+        (filtroTagAtivo === "todos" || i.tag === filtroTagAtivo)
+    );
     
     container.innerHTML = filtrados.length ? filtrados.map(c => `
         <div class="card">
@@ -151,12 +156,9 @@ function filtrarPorTag(tag, btn) {
     renderizarCardsFiltros(document.getElementById("content-area"));
 }
 
-function filtrarConteudo() { renderizarCardsFiltros(document.getElementById("content-area")); }
-
 function abrirNotificacoes() {
     const container = document.getElementById("sidebar-content");
     
-    // Aqui você pode colocar os dados que quiser
     const minhasNotificacoes = [
         { titulo: "Rematrícula 2026/2", tag: "Gest", tipo: "Gestão", desc: "O prazo encerra no fim deste mês. Realize na secretaria." },
         { titulo: "Entrega de Projetos", tag: "prof", tipo: "Professor", desc: "Postagem no AVA até sexta-feira." }
@@ -181,7 +183,6 @@ function abrirNotificacoes() {
 }
 
 function fecharNotificacoes() {
-    // 4. Esconde o painel lateral
     document.getElementById("sidebar-overlay").style.display = "none";
     document.getElementById("notification-sidebar").classList.remove("open");
 }

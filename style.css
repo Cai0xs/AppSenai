@@ -373,6 +373,7 @@ main {
 .card { 
     background: var(--card-bg); 
     padding: 20px; 
+    margin-top: 38px;
     border-radius: 16px; 
     margin-bottom: 14px; 
     box-shadow: var(--shadow-subtle); 
@@ -464,6 +465,7 @@ main {
 /* SKELETON SCREEN */
 .skeleton-card {
     background: var(--card-bg);
+    margin-top: 38px;
     padding: 20px;
     border-radius: 16px;
     margin-bottom: 14px;
